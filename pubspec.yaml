@@ -30,8 +30,7 @@ dependencies:
   window_manager: ^0.4.3
   
   # Keyboard & Mouse Simulation
-  # Note: bixat_key_mouse is a Rust-based cross-platform input simulation package
-  # Using hotkey_manager for hotkey support
+  mouse: ^1.0.1
   
   # Utilities
   equatable: ^2.0.7

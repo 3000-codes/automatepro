@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/click_config.dart';
+import '../../infrastructure/services/click_engine.dart';
+import '../../infrastructure/hotkey/hotkey_service.dart';
 
 class ClickEngineState extends Equatable {
   final bool isRunning;
@@ -35,18 +38,53 @@ class ClickEngineState extends Equatable {
 }
 
 class ClickEngineNotifier extends StateNotifier<ClickEngineState> {
-  ClickEngineNotifier() : super(const ClickEngineState());
+  final ClickEngine _clickEngine = ClickEngine();
+  final HotkeyService _hotkeyService = HotkeyService();
+  StreamSubscription<int>? _clickCountSubscription;
 
-  void start(ClickConfig config) {
+  ClickEngineNotifier() : super(const ClickEngineState()) {
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await _clickEngine.initialize();
+    await _hotkeyService.initialize();
+
+    await _hotkeyService.registerHotkeys(
+      onStart: () {
+        final config = state.currentConfig;
+        if (config != null && !state.isRunning) {
+          start(config);
+        }
+      },
+      onStop: () {
+        if (state.isRunning) {
+          stop();
+        }
+      },
+    );
+
+    _clickCountSubscription = _clickEngine.clickCountStream.listen((count) {
+      state = state.copyWith(clickCount: count);
+    });
+  }
+
+  Future<void> start(ClickConfig config) async {
     state = state.copyWith(
       isRunning: true,
       currentConfig: config,
       currentCps: config.cps,
       clickCount: 0,
     );
+    await _clickEngine.start(config);
+
+    if (!_clickEngine.isRunning && state.isRunning) {
+      state = state.copyWith(isRunning: false, currentCps: 0.0);
+    }
   }
 
   void stop() {
+    _clickEngine.stop();
     state = state.copyWith(isRunning: false, currentCps: 0.0);
   }
 
@@ -56,12 +94,17 @@ class ClickEngineNotifier extends StateNotifier<ClickEngineState> {
     }
   }
 
-  void incrementClickCount() {
-    state = state.copyWith(clickCount: state.clickCount + 1);
+  void resetClickCount() {
+    _clickEngine.resetClickCount();
+    state = state.copyWith(clickCount: 0);
   }
 
-  void resetClickCount() {
-    state = state.copyWith(clickCount: 0);
+  @override
+  void dispose() {
+    _clickCountSubscription?.cancel();
+    _hotkeyService.dispose();
+    _clickEngine.dispose();
+    super.dispose();
   }
 }
 
