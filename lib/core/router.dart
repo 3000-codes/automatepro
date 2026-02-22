@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../presentation/pages/home_page.dart';
 import '../../presentation/pages/settings_page.dart';
 import '../../presentation/pages/presets_page.dart';
+import '../../l10n/app_localizations.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -39,13 +40,15 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
-class MainShell extends StatelessWidget {
+class MainShell extends ConsumerWidget {
   final Widget child;
 
   const MainShell({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Row(
         children: [
@@ -75,21 +78,21 @@ class MainShell extends StatelessWidget {
                 ],
               ),
             ),
-            destinations: const [
+            destinations: [
               NavigationRailDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home),
-                label: Text('Home'),
+                icon: const Icon(Icons.home_outlined),
+                selectedIcon: const Icon(Icons.home),
+                label: Text(l10n.home),
               ),
               NavigationRailDestination(
-                icon: Icon(Icons.bookmark_outline),
-                selectedIcon: Icon(Icons.bookmark),
-                label: Text('Presets'),
+                icon: const Icon(Icons.bookmark_outline),
+                selectedIcon: const Icon(Icons.bookmark),
+                label: Text(l10n.presets),
               ),
               NavigationRailDestination(
-                icon: Icon(Icons.settings_outlined),
-                selectedIcon: Icon(Icons.settings),
-                label: Text('Settings'),
+                icon: const Icon(Icons.settings_outlined),
+                selectedIcon: const Icon(Icons.settings),
+                label: Text(l10n.settings),
               ),
             ],
           ),

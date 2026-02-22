@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/click_config.dart';
 import '../../infrastructure/services/click_engine.dart';
 import '../../infrastructure/hotkey/hotkey_service.dart';
+import 'log_provider.dart';
 
 class ClickEngineState extends Equatable {
   final bool isRunning;
@@ -41,14 +42,17 @@ class ClickEngineNotifier extends StateNotifier<ClickEngineState> {
   final ClickEngine _clickEngine = ClickEngine();
   final HotkeyService _hotkeyService = HotkeyService();
   StreamSubscription<int>? _clickCountSubscription;
+  final Ref _ref;
 
-  ClickEngineNotifier() : super(const ClickEngineState()) {
+  ClickEngineNotifier(this._ref) : super(const ClickEngineState()) {
     _initialize();
   }
 
   Future<void> _initialize() async {
     await _clickEngine.initialize();
     await _hotkeyService.initialize();
+
+    _ref.read(logProvider.notifier).info('Click engine initialized');
 
     await _hotkeyService.registerHotkeys(
       onStart: () {
@@ -70,6 +74,12 @@ class ClickEngineNotifier extends StateNotifier<ClickEngineState> {
   }
 
   Future<void> start(ClickConfig config) async {
+    _ref
+        .read(logProvider.notifier)
+        .info(
+          'Starting click: mode=${config.mode.name}, cps=${config.cps}, x=${config.x}, y=${config.y}',
+        );
+
     state = state.copyWith(
       isRunning: true,
       currentConfig: config,
@@ -80,11 +90,13 @@ class ClickEngineNotifier extends StateNotifier<ClickEngineState> {
 
     if (!_clickEngine.isRunning && state.isRunning) {
       state = state.copyWith(isRunning: false, currentCps: 0.0);
+      _ref.read(logProvider.notifier).info('Click completed');
     }
   }
 
   void stop() {
     _clickEngine.stop();
+    _ref.read(logProvider.notifier).info('Click stopped manually');
     state = state.copyWith(isRunning: false, currentCps: 0.0);
   }
 
@@ -110,7 +122,7 @@ class ClickEngineNotifier extends StateNotifier<ClickEngineState> {
 
 final clickEngineProvider =
     StateNotifierProvider<ClickEngineNotifier, ClickEngineState>((ref) {
-      return ClickEngineNotifier();
+      return ClickEngineNotifier(ref);
     });
 
 final currentConfigProvider = StateProvider<ClickConfig>((ref) {

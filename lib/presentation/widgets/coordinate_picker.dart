@@ -2,13 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/click_provider.dart';
+import '../../l10n/app_localizations.dart';
+import '../../infrastructure/services/click_engine.dart';
 
-class CoordinatePicker extends ConsumerWidget {
+class CoordinatePicker extends ConsumerStatefulWidget {
   const CoordinatePicker({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CoordinatePicker> createState() => _CoordinatePickerState();
+}
+
+class _CoordinatePickerState extends ConsumerState<CoordinatePicker> {
+  final _xController = TextEditingController();
+  final _yController = TextEditingController();
+  bool _isLoadingPosition = false;
+
+  @override
+  void dispose() {
+    _xController.dispose();
+    _yController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final currentConfig = ref.watch(currentConfigProvider);
+    final l10n = AppLocalizations.of(context)!;
+
+    // Sync controllers with config
+    if (_xController.text != currentConfig.x.toString()) {
+      _xController.text = currentConfig.x.toString();
+    }
+    if (_yController.text != currentConfig.y.toString()) {
+      _yController.text = currentConfig.y.toString();
+    }
 
     return Card(
       child: Padding(
@@ -17,7 +44,7 @@ class CoordinatePicker extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Click Position',
+              l10n.clickPosition,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
@@ -25,14 +52,12 @@ class CoordinatePicker extends ConsumerWidget {
               children: [
                 Expanded(
                   child: TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'X Coordinate',
-                      prefixIcon: Icon(Icons.open_with),
+                    decoration: InputDecoration(
+                      labelText: l10n.xCoordinate,
+                      prefixIcon: const Icon(Icons.open_with),
                     ),
                     keyboardType: TextInputType.number,
-                    controller: TextEditingController(
-                      text: currentConfig.x.toString(),
-                    ),
+                    controller: _xController,
                     onChanged: (value) {
                       final x = int.tryParse(value) ?? 0;
                       ref.read(currentConfigProvider.notifier).state =
@@ -43,14 +68,12 @@ class CoordinatePicker extends ConsumerWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Y Coordinate',
-                      prefixIcon: Icon(Icons.open_with),
+                    decoration: InputDecoration(
+                      labelText: l10n.yCoordinate,
+                      prefixIcon: const Icon(Icons.open_with),
                     ),
                     keyboardType: TextInputType.number,
-                    controller: TextEditingController(
-                      text: currentConfig.y.toString(),
-                    ),
+                    controller: _yController,
                     onChanged: (value) {
                       final y = int.tryParse(value) ?? 0;
                       ref.read(currentConfigProvider.notifier).state =
@@ -67,37 +90,65 @@ class CoordinatePicker extends ConsumerWidget {
                   child: OutlinedButton.icon(
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Click anywhere on screen to pick coordinates',
-                          ),
-                          duration: Duration(seconds: 2),
+                        SnackBar(
+                          content: Text(l10n.clickAnywhere),
+                          duration: const Duration(seconds: 2),
                         ),
                       );
                     },
                     icon: const Icon(Icons.colorize),
-                    label: const Text('Pick Position'),
+                    label: Text(l10n.pickPosition),
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () {
-                      ref.read(currentConfigProvider.notifier).state =
-                          currentConfig.copyWith(x: 0, y: 0);
-                    },
-                    icon: const Icon(Icons.center_focus_strong),
-                    label: const Text('Current Mouse'),
+                    onPressed: _isLoadingPosition
+                        ? null
+                        : () async {
+                            setState(() => _isLoadingPosition = true);
+                            try {
+                              final position = await ClickEngine()
+                                  .getMousePosition();
+                              ref
+                                  .read(currentConfigProvider.notifier)
+                                  .state = currentConfig.copyWith(
+                                x: position.x,
+                                y: position.y,
+                              );
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Error: $e'),
+                                    backgroundColor: Theme.of(
+                                      context,
+                                    ).colorScheme.error,
+                                  ),
+                                );
+                              }
+                            } finally {
+                              if (mounted) {
+                                setState(() => _isLoadingPosition = false);
+                              }
+                            }
+                          },
+                    icon: _isLoadingPosition
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.center_focus_strong),
+                    label: Text(l10n.currentMouse),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
             SwitchListTile(
-              title: const Text('Random Position'),
-              subtitle: const Text(
-                'Add slight randomization to click position',
-              ),
+              title: Text(l10n.randomPosition),
+              subtitle: Text(l10n.randomPositionDesc),
               value: currentConfig.randomPosition,
               onChanged: (value) {
                 ref.read(currentConfigProvider.notifier).state = currentConfig
@@ -108,7 +159,7 @@ class CoordinatePicker extends ConsumerWidget {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  const Text('Randomness: '),
+                  Text(l10n.randomnessValue),
                   Expanded(
                     child: Slider(
                       value: currentConfig.positionRandomness.toDouble(),
@@ -125,7 +176,7 @@ class CoordinatePicker extends ConsumerWidget {
                       },
                     ),
                   ),
-                  Text('${currentConfig.positionRandomness}px'),
+                  Text('${currentConfig.positionRandomness}${l10n.px}'),
                 ],
               ),
             ],

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_constants.dart';
 import '../../domain/entities/click_config.dart';
 import '../providers/click_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class ClickSettingsPanel extends ConsumerWidget {
   const ClickSettingsPanel({super.key});
@@ -11,6 +12,7 @@ class ClickSettingsPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentConfig = ref.watch(currentConfigProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Card(
       child: Padding(
@@ -20,29 +22,32 @@ class ClickSettingsPanel extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Click Settings',
+                l10n.clickSettings,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 24),
               DropdownButtonFormField<ClickMode>(
-                initialValue: currentConfig.mode,
-                decoration: const InputDecoration(
-                  labelText: 'Click Mode',
-                  prefixIcon: Icon(Icons.touch_app),
+                value: currentConfig.mode,
+                decoration: InputDecoration(
+                  labelText: l10n.clickMode,
+                  prefixIcon: const Icon(Icons.touch_app),
                 ),
-                items: const [
+                items: [
                   DropdownMenuItem(
                     value: ClickMode.single,
-                    child: Text('Single Click'),
+                    child: Text(l10n.singleClick),
                   ),
                   DropdownMenuItem(
                     value: ClickMode.continuous,
-                    child: Text('Continuous'),
+                    child: Text(l10n.continuous),
                   ),
-                  DropdownMenuItem(value: ClickMode.hold, child: Text('Hold')),
+                  DropdownMenuItem(
+                    value: ClickMode.hold,
+                    child: Text(l10n.hold),
+                  ),
                   DropdownMenuItem(
                     value: ClickMode.doubleClick,
-                    child: Text('Double Click'),
+                    child: Text(l10n.doubleClick),
                   ),
                 ],
                 onChanged: (value) {
@@ -54,23 +59,23 @@ class ClickSettingsPanel extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<MouseButton>(
-                initialValue: currentConfig.button,
-                decoration: const InputDecoration(
-                  labelText: 'Mouse Button',
-                  prefixIcon: Icon(Icons.mouse),
+                value: currentConfig.button,
+                decoration: InputDecoration(
+                  labelText: l10n.mouseButton,
+                  prefixIcon: const Icon(Icons.mouse),
                 ),
-                items: const [
+                items: [
                   DropdownMenuItem(
                     value: MouseButton.left,
-                    child: Text('Left'),
+                    child: Text(l10n.left),
                   ),
                   DropdownMenuItem(
                     value: MouseButton.middle,
-                    child: Text('Middle'),
+                    child: Text(l10n.middle),
                   ),
                   DropdownMenuItem(
                     value: MouseButton.right,
-                    child: Text('Right'),
+                    child: Text(l10n.right),
                   ),
                 ],
                 onChanged: (value) {
@@ -82,7 +87,7 @@ class ClickSettingsPanel extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                'Click Speed',
+                l10n.clickSpeed,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 16),
@@ -92,7 +97,9 @@ class ClickSettingsPanel extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${currentConfig.cps.toStringAsFixed(1)} CPS'),
+                        Text(
+                          l10n.cpsValue(currentConfig.cps.toStringAsFixed(1)),
+                        ),
                         Slider(
                           value: currentConfig.cps,
                           min: AppConstants.minCps,
@@ -110,19 +117,19 @@ class ClickSettingsPanel extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<IntervalType>(
-                initialValue: currentConfig.intervalType,
-                decoration: const InputDecoration(
-                  labelText: 'Interval Type',
-                  prefixIcon: Icon(Icons.timer),
+                value: currentConfig.intervalType,
+                decoration: InputDecoration(
+                  labelText: l10n.intervalType,
+                  prefixIcon: const Icon(Icons.timer),
                 ),
-                items: const [
+                items: [
                   DropdownMenuItem(
                     value: IntervalType.fixed,
-                    child: Text('Fixed'),
+                    child: Text(l10n.fixed),
                   ),
                   DropdownMenuItem(
                     value: IntervalType.random,
-                    child: Text('Random'),
+                    child: Text(l10n.random),
                   ),
                 ],
                 onChanged: (value) {
@@ -135,9 +142,9 @@ class ClickSettingsPanel extends ConsumerWidget {
               if (currentConfig.intervalType == IntervalType.fixed) ...[
                 const SizedBox(height: 16),
                 TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Fixed Interval (ms)',
-                    prefixIcon: Icon(Icons.timer),
+                  decoration: InputDecoration(
+                    labelText: l10n.fixedIntervalMs,
+                    prefixIcon: const Icon(Icons.timer),
                   ),
                   keyboardType: TextInputType.number,
                   controller: TextEditingController(
@@ -160,9 +167,7 @@ class ClickSettingsPanel extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'Min (ms)',
-                        ),
+                        decoration: InputDecoration(labelText: l10n.minMs),
                         keyboardType: TextInputType.number,
                         controller: TextEditingController(
                           text: currentConfig.minIntervalMs.toString(),
@@ -177,9 +182,7 @@ class ClickSettingsPanel extends ConsumerWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'Max (ms)',
-                        ),
+                        decoration: InputDecoration(labelText: l10n.maxMs),
                         keyboardType: TextInputType.number,
                         controller: TextEditingController(
                           text: currentConfig.maxIntervalMs.toString(),
@@ -195,10 +198,10 @@ class ClickSettingsPanel extends ConsumerWidget {
                 ),
               ],
               const SizedBox(height: 24),
-              Text('Repeat', style: Theme.of(context).textTheme.titleMedium),
+              Text(l10n.repeat, style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 16),
               SwitchListTile(
-                title: const Text('Infinite Repeat'),
+                title: Text(l10n.infiniteRepeat),
                 value: currentConfig.infiniteRepeat,
                 onChanged: (value) {
                   ref.read(currentConfigProvider.notifier).state = currentConfig
@@ -208,9 +211,9 @@ class ClickSettingsPanel extends ConsumerWidget {
               if (!currentConfig.infiniteRepeat) ...[
                 const SizedBox(height: 8),
                 TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Repeat Count',
-                    prefixIcon: Icon(Icons.repeat),
+                  decoration: InputDecoration(
+                    labelText: l10n.repeatCount,
+                    prefixIcon: const Icon(Icons.repeat),
                   ),
                   keyboardType: TextInputType.number,
                   controller: TextEditingController(

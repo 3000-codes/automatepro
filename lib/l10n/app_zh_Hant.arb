@@ -1,0 +1,103 @@
+{
+  "@@locale": "zh_Hant",
+  "appTitle": "AutoMate Pro",
+  "home": "首頁",
+  "presets": "預設",
+  "settings": "設定",
+  "clickControl": "點擊控制",
+  "start": "開始",
+  "stop": "停止",
+  "clickPosition": "點擊位置",
+  "xCoordinate": "X座標",
+  "yCoordinate": "Y座標",
+  "pickPosition": "拾取位置",
+  "currentMouse": "目前滑鼠",
+  "currentMousePos": "目前滑鼠位置",
+  "randomPosition": "隨機位置",
+  "randomPositionDesc": "為點擊位置添加輕微隨機偏移",
+  "randomness": "隨機範圍",
+  "randomnessValue": "隨機範圍: ",
+  "px": "像素",
+  "clickSettings": "點擊設定",
+  "clickMode": "點擊模式",
+  "singleClick": "單次點擊",
+  "continuous": "連續點擊",
+  "hold": "長按",
+  "doubleClick": "雙擊",
+  "mouseButton": "滑鼠按鈕",
+  "left": "左鍵",
+  "middle": "中鍵",
+  "right": "右鍵",
+  "clickSpeed": "點擊速度",
+  "cps": "CPS",
+  "cpsValue": "{cps} CPS",
+  "@cpsValue": {
+    "placeholders": {
+      "cps": {
+        "type": "String"
+      }
+    }
+  },
+  "intervalType": "間隔類型",
+  "fixed": "固定",
+  "random": "隨機",
+  "fixedIntervalMs": "固定間隔 (毫秒)",
+  "minMs": "最小 (毫秒)",
+  "maxMs": "最大 (毫秒)",
+  "repeat": "重複",
+  "infiniteRepeat": "無限重複",
+  "repeatCount": "重複次數",
+  "general": "通用",
+  "theme": "主題",
+  "language": "語言",
+  "hotkeys": "快捷鍵",
+  "startClicking": "開始點擊",
+  "stopClicking": "停止點擊",
+  "about": "關於",
+  "version": "版本",
+  "systemDefault": "跟隨系統",
+  "noPresets": "暫無預設",
+  "createPresetTip": "建立預設以儲存您的點擊設定",
+  "load": "載入",
+  "edit": "編輯",
+  "delete": "刪除",
+  "newPreset": "新增預設",
+  "clickAnywhere": "點擊螢幕任意位置以拾取座標",
+  "clickStartToBegin": "點擊開始按鈕開始",
+  "clicks": "次點擊",
+  "clicksValue": "{count} 次點擊",
+  "@clicksValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "running": "執行中",
+  "runningCps": "執行中 - {cps} CPS",
+  "@runningCps": {
+    "placeholders": {
+      "cps": {
+        "type": "String"
+      }
+    }
+  },
+  "error": "錯誤",
+  "logs": "日誌",
+  "copy": "複製",
+  "save": "儲存",
+  "clear": "清除",
+  "close": "關閉",
+  "logsCopied": "日誌已複製到剪貼簿",
+  "logsSaved": "日誌已儲存到: {path}",
+  "@logsSaved": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "noLogsYet": "暫無日誌",
+  "autoScroll": "自動滾動",
+  "logWindow": "日誌視窗"
+}

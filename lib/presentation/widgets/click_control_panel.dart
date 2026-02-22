@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/click_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class ClickControlPanel extends ConsumerWidget {
   const ClickControlPanel({super.key});
@@ -10,6 +11,7 @@ class ClickControlPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final clickState = ref.watch(clickEngineProvider);
     final currentConfig = ref.watch(currentConfigProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Card(
       child: Padding(
@@ -18,7 +20,7 @@ class ClickControlPanel extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Click Control',
+              l10n.clickControl,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 32),
@@ -33,7 +35,7 @@ class ClickControlPanel extends ConsumerWidget {
                           .start(currentConfig);
                     },
                     icon: const Icon(Icons.play_arrow),
-                    label: const Text('Start'),
+                    label: Text(l10n.start),
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 48,
@@ -47,7 +49,7 @@ class ClickControlPanel extends ConsumerWidget {
                       ref.read(clickEngineProvider.notifier).stop();
                     },
                     icon: const Icon(Icons.stop),
-                    label: const Text('Stop'),
+                    label: Text(l10n.stop),
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 48,
@@ -61,7 +63,7 @@ class ClickControlPanel extends ConsumerWidget {
             const SizedBox(height: 24),
             if (clickState.isRunning) ...[
               Text(
-                '${clickState.currentCps.toStringAsFixed(1)} CPS',
+                l10n.cpsValue(clickState.currentCps.toStringAsFixed(1)),
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
@@ -69,21 +71,21 @@ class ClickControlPanel extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                '${clickState.clickCount} clicks',
+                l10n.clicksValue(clickState.clickCount),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Theme.of(context).colorScheme.outline,
                 ),
               ),
             ] else ...[
               Text(
-                '${currentConfig.cps.toStringAsFixed(1)} CPS',
+                l10n.cpsValue(currentConfig.cps.toStringAsFixed(1)),
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   color: Theme.of(context).colorScheme.outline,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Click Start to begin',
+                l10n.clickStartToBegin,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.outline,
                 ),
@@ -95,12 +97,12 @@ class ClickControlPanel extends ConsumerWidget {
               children: [
                 Chip(
                   avatar: const Icon(Icons.keyboard, size: 18),
-                  label: const Text('F9 - Start'),
+                  label: Text('F9 - ${l10n.start}'),
                 ),
                 const SizedBox(width: 8),
                 Chip(
                   avatar: const Icon(Icons.keyboard, size: 18),
-                  label: const Text('F10 - Stop'),
+                  label: Text('F10 - ${l10n.stop}'),
                 ),
               ],
             ),

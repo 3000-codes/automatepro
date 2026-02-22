@@ -1,0 +1,103 @@
+{
+  "@@locale": "en",
+  "appTitle": "AutoMate Pro",
+  "home": "Home",
+  "presets": "Presets",
+  "settings": "Settings",
+  "clickControl": "Click Control",
+  "start": "Start",
+  "stop": "Stop",
+  "clickPosition": "Click Position",
+  "xCoordinate": "X Coordinate",
+  "yCoordinate": "Y Coordinate",
+  "pickPosition": "Pick Position",
+  "currentMouse": "Current Mouse",
+  "currentMousePos": "Current Mouse Position",
+  "randomPosition": "Random Position",
+  "randomPositionDesc": "Add slight randomization to click position",
+  "randomness": "Randomness",
+  "randomnessValue": "Randomness: ",
+  "px": "px",
+  "clickSettings": "Click Settings",
+  "clickMode": "Click Mode",
+  "singleClick": "Single Click",
+  "continuous": "Continuous",
+  "hold": "Hold",
+  "doubleClick": "Double Click",
+  "mouseButton": "Mouse Button",
+  "left": "Left",
+  "middle": "Middle",
+  "right": "Right",
+  "clickSpeed": "Click Speed",
+  "cps": "CPS",
+  "cpsValue": "{cps} CPS",
+  "@cpsValue": {
+    "placeholders": {
+      "cps": {
+        "type": "String"
+      }
+    }
+  },
+  "intervalType": "Interval Type",
+  "fixed": "Fixed",
+  "random": "Random",
+  "fixedIntervalMs": "Fixed Interval (ms)",
+  "minMs": "Min (ms)",
+  "maxMs": "Max (ms)",
+  "repeat": "Repeat",
+  "infiniteRepeat": "Infinite Repeat",
+  "repeatCount": "Repeat Count",
+  "general": "General",
+  "theme": "Theme",
+  "language": "Language",
+  "hotkeys": "Hotkeys",
+  "startClicking": "Start Clicking",
+  "stopClicking": "Stop Clicking",
+  "about": "About",
+  "version": "Version",
+  "systemDefault": "System default",
+  "noPresets": "No presets yet",
+  "createPresetTip": "Create a preset to save your click configurations",
+  "load": "Load",
+  "edit": "Edit",
+  "delete": "Delete",
+  "newPreset": "New Preset",
+  "clickAnywhere": "Click anywhere on screen to pick coordinates",
+  "clickStartToBegin": "Click Start to begin",
+  "clicks": "clicks",
+  "clicksValue": "{count} clicks",
+  "@clicksValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "running": "Running",
+  "runningCps": "Running - {cps} CPS",
+  "@runningCps": {
+    "placeholders": {
+      "cps": {
+        "type": "String"
+      }
+    }
+  },
+  "error": "Error",
+  "logs": "Logs",
+  "copy": "Copy",
+  "save": "Save",
+  "clear": "Clear",
+  "close": "Close",
+  "logsCopied": "Logs copied to clipboard",
+  "logsSaved": "Logs saved to: {path}",
+  "@logsSaved": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "noLogsYet": "No logs yet",
+  "autoScroll": "Auto scroll",
+  "logWindow": "Log Window"
+}

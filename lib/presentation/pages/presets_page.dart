@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/presets_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class PresetsPage extends ConsumerWidget {
   const PresetsPage({super.key});
@@ -9,10 +10,11 @@ class PresetsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final presetsAsync = ref.watch(presetsProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Presets'),
+        title: Text(l10n.presets),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -36,14 +38,14 @@ class PresetsPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No presets yet',
+                    l10n.noPresets,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Theme.of(context).colorScheme.outline,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Create a preset to save your click configurations',
+                    l10n.createPresetTip,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.outline,
                     ),
@@ -63,15 +65,12 @@ class PresetsPage extends ConsumerWidget {
                 child: ListTile(
                   leading: const CircleAvatar(child: Icon(Icons.touch_app)),
                   title: Text(preset.name),
-                  subtitle: Text('${preset.cps.toStringAsFixed(1)} CPS'),
+                  subtitle: Text(l10n.cpsValue(preset.cps.toStringAsFixed(1))),
                   trailing: PopupMenuButton(
                     itemBuilder: (context) => [
-                      const PopupMenuItem(value: 'load', child: Text('Load')),
-                      const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                      const PopupMenuItem(
-                        value: 'delete',
-                        child: Text('Delete'),
-                      ),
+                      PopupMenuItem(value: 'load', child: Text(l10n.load)),
+                      PopupMenuItem(value: 'edit', child: Text(l10n.edit)),
+                      PopupMenuItem(value: 'delete', child: Text(l10n.delete)),
                     ],
                     onSelected: (value) {
                       switch (value) {
@@ -93,7 +92,7 @@ class PresetsPage extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Error: $error')),
+        error: (error, stack) => Center(child: Text('${l10n.error}: $error')),
       ),
     );
   }

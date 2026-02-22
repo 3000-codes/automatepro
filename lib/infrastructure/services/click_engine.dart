@@ -151,4 +151,8 @@ class ClickEngine {
     stop();
     _clickCountController.close();
   }
+
+  Future<Point<int>> getMousePosition() async {
+    return await _mouseService.getCurrentPosition();
+  }
 }
