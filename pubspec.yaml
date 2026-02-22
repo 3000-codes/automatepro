@@ -30,6 +30,7 @@ dependencies:
   
   # Window Management
   window_manager: ^0.4.3
+  desktop_multi_window: ^0.3.0
   
   # Keyboard & Mouse Simulation
   mouse: ^1.0.1
