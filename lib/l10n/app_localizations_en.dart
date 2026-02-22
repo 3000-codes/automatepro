@@ -232,4 +232,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logWindow => 'Log Window';
+
+  @override
+  String get windowOpacity => 'Window Opacity';
+
+  @override
+  String get mainWindowOpacity => 'Main Window Opacity';
+
+  @override
+  String get logWindowOpacity => 'Log Window Opacity';
 }

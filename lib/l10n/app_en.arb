@@ -99,5 +99,8 @@
   },
   "noLogsYet": "No logs yet",
   "autoScroll": "Auto scroll",
-  "logWindow": "Log Window"
+  "logWindow": "Log Window",
+  "windowOpacity": "Window Opacity",
+  "mainWindowOpacity": "Main Window Opacity",
+  "logWindowOpacity": "Log Window Opacity"
 }

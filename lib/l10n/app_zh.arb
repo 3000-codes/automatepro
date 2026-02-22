@@ -99,5 +99,8 @@
   },
   "noLogsYet": "暂无日志",
   "autoScroll": "自动滚动",
-  "logWindow": "日志窗口"
+  "logWindow": "日志窗口",
+  "windowOpacity": "窗口透明度",
+  "mainWindowOpacity": "主窗口透明度",
+  "logWindowOpacity": "日志窗口透明度"
 }

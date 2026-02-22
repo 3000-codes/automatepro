@@ -231,6 +231,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get logWindow => '日志窗口';
+
+  @override
+  String get windowOpacity => '窗口透明度';
+
+  @override
+  String get mainWindowOpacity => '主窗口透明度';
+
+  @override
+  String get logWindowOpacity => '日志窗口透明度';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -460,4 +469,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get logWindow => '日誌視窗';
+
+  @override
+  String get windowOpacity => '視窗透明度';
+
+  @override
+  String get mainWindowOpacity => '主視窗透明度';
+
+  @override
+  String get logWindowOpacity => '日誌視窗透明度';
 }

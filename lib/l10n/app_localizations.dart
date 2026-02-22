@@ -530,6 +530,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log Window'**
   String get logWindow;
+
+  /// No description provided for @windowOpacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Window Opacity'**
+  String get windowOpacity;
+
+  /// No description provided for @mainWindowOpacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Main Window Opacity'**
+  String get mainWindowOpacity;
+
+  /// No description provided for @logWindowOpacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Window Opacity'**
+  String get logWindowOpacity;
 }
 
 class _AppLocalizationsDelegate
