@@ -234,11 +234,99 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logWindow => 'Log Window';
 
   @override
-  String get windowOpacity => 'Window Opacity';
+  String get windowOpacity => 'Log window opacity';
 
   @override
   String get mainWindowOpacity => 'Main Window Opacity';
 
   @override
   String get logWindowOpacity => 'Log Window Opacity';
+
+  @override
+  String get search => 'Search...';
+
+  @override
+  String get clearLogs => 'Clear Logs';
+
+  @override
+  String get clearLogsConfirm =>
+      'Are you sure you want to clear all logs? This action cannot be undone.';
+
+  @override
+  String get scrollToBottom => 'Scroll to bottom';
+
+  @override
+  String get pauseAutoScroll => 'Pause auto scroll';
+
+  @override
+  String get logLevel => 'Log Level';
+
+  @override
+  String get timeFilter => 'Time Filter';
+
+  @override
+  String get allTime => 'All Time';
+
+  @override
+  String get last5Minutes => 'Last 5 Minutes';
+
+  @override
+  String get last1Hour => 'Last 1 Hour';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get export => 'Export';
+
+  @override
+  String get copyToClipboard => 'Copy to clipboard';
+
+  @override
+  String get copyMessage => 'Copy message';
+
+  @override
+  String get copyAll => 'Copy all';
+
+  @override
+  String get timestamp => 'Timestamp';
+
+  @override
+  String get level => 'Level';
+
+  @override
+  String get source => 'Source';
+
+  @override
+  String get message => 'Message';
+
+  @override
+  String get details => 'Details';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get logSettings => 'Log Settings';
+
+  @override
+  String get persistLogs => 'Save logs to file';
+
+  @override
+  String get logSavePath => 'Save path';
+
+  @override
+  String get autoSaveInterval => 'Auto save interval';
+
+  @override
+  String get retentionDays => 'Retention days';
+
+  @override
+  String get maxLogCount => 'Max log count';
+
+  @override
+  String get windowEnabled => 'Enable log window by default';
 }

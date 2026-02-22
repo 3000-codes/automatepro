@@ -233,13 +233,100 @@ class AppLocalizationsZh extends AppLocalizations {
   String get logWindow => '日志窗口';
 
   @override
-  String get windowOpacity => '窗口透明度';
+  String get windowOpacity => '日志窗口透明度';
 
   @override
   String get mainWindowOpacity => '主窗口透明度';
 
   @override
   String get logWindowOpacity => '日志窗口透明度';
+
+  @override
+  String get search => '搜索...';
+
+  @override
+  String get clearLogs => '清空日志';
+
+  @override
+  String get clearLogsConfirm => '确定要清空所有日志吗？此操作不可撤销。';
+
+  @override
+  String get scrollToBottom => '滚动到底部';
+
+  @override
+  String get pauseAutoScroll => '暂停自动滚动';
+
+  @override
+  String get logLevel => '日志级别';
+
+  @override
+  String get timeFilter => '时间过滤';
+
+  @override
+  String get allTime => '全部时间';
+
+  @override
+  String get last5Minutes => '最近5分钟';
+
+  @override
+  String get last1Hour => '最近1小时';
+
+  @override
+  String get today => '今天';
+
+  @override
+  String get export => '导出';
+
+  @override
+  String get copyToClipboard => '复制到剪贴板';
+
+  @override
+  String get copyMessage => '复制消息';
+
+  @override
+  String get copyAll => '复制全部';
+
+  @override
+  String get timestamp => '时间戳';
+
+  @override
+  String get level => '级别';
+
+  @override
+  String get source => '来源';
+
+  @override
+  String get message => '消息';
+
+  @override
+  String get details => '详情';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get confirm => '确认';
+
+  @override
+  String get logSettings => '日志设置';
+
+  @override
+  String get persistLogs => '保存日志到文件';
+
+  @override
+  String get logSavePath => '保存路径';
+
+  @override
+  String get autoSaveInterval => '自动保存间隔';
+
+  @override
+  String get retentionDays => '保留天数';
+
+  @override
+  String get maxLogCount => '最大日志数量';
+
+  @override
+  String get windowEnabled => '默认开启日志窗口';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -471,11 +558,98 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get logWindow => '日誌視窗';
 
   @override
-  String get windowOpacity => '視窗透明度';
+  String get windowOpacity => '日誌視窗透明度';
 
   @override
   String get mainWindowOpacity => '主視窗透明度';
 
   @override
   String get logWindowOpacity => '日誌視窗透明度';
+
+  @override
+  String get search => '搜尋...';
+
+  @override
+  String get clearLogs => '清空日誌';
+
+  @override
+  String get clearLogsConfirm => '確定要清空所有日誌嗎？此操作不可撤銷。';
+
+  @override
+  String get scrollToBottom => '滾動到底部';
+
+  @override
+  String get pauseAutoScroll => '暫停自動滾動';
+
+  @override
+  String get logLevel => '日誌級別';
+
+  @override
+  String get timeFilter => '時間過濾';
+
+  @override
+  String get allTime => '全部時間';
+
+  @override
+  String get last5Minutes => '最近5分鐘';
+
+  @override
+  String get last1Hour => '最近1小時';
+
+  @override
+  String get today => '今天';
+
+  @override
+  String get export => '匯出';
+
+  @override
+  String get copyToClipboard => '複製到剪貼簿';
+
+  @override
+  String get copyMessage => '複製訊息';
+
+  @override
+  String get copyAll => '複製全部';
+
+  @override
+  String get timestamp => '時間戳';
+
+  @override
+  String get level => '級別';
+
+  @override
+  String get source => '來源';
+
+  @override
+  String get message => '訊息';
+
+  @override
+  String get details => '詳情';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get confirm => '確認';
+
+  @override
+  String get logSettings => '日誌設定';
+
+  @override
+  String get persistLogs => '儲存日誌到檔案';
+
+  @override
+  String get logSavePath => '儲存路徑';
+
+  @override
+  String get autoSaveInterval => '自動儲存間隔';
+
+  @override
+  String get retentionDays => '保留天數';
+
+  @override
+  String get maxLogCount => '最大日誌數量';
+
+  @override
+  String get windowEnabled => '預設開啟日誌視窗';
 }

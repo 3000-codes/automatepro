@@ -534,7 +534,7 @@ abstract class AppLocalizations {
   /// No description provided for @windowOpacity.
   ///
   /// In en, this message translates to:
-  /// **'Window Opacity'**
+  /// **'Log window opacity'**
   String get windowOpacity;
 
   /// No description provided for @mainWindowOpacity.
@@ -548,6 +548,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log Window Opacity'**
   String get logWindowOpacity;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get search;
+
+  /// No description provided for @clearLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Logs'**
+  String get clearLogs;
+
+  /// No description provided for @clearLogsConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear all logs? This action cannot be undone.'**
+  String get clearLogsConfirm;
+
+  /// No description provided for @scrollToBottom.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll to bottom'**
+  String get scrollToBottom;
+
+  /// No description provided for @pauseAutoScroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause auto scroll'**
+  String get pauseAutoScroll;
+
+  /// No description provided for @logLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Level'**
+  String get logLevel;
+
+  /// No description provided for @timeFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Filter'**
+  String get timeFilter;
+
+  /// No description provided for @allTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All Time'**
+  String get allTime;
+
+  /// No description provided for @last5Minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 5 Minutes'**
+  String get last5Minutes;
+
+  /// No description provided for @last1Hour.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 1 Hour'**
+  String get last1Hour;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get export;
+
+  /// No description provided for @copyToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to clipboard'**
+  String get copyToClipboard;
+
+  /// No description provided for @copyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy message'**
+  String get copyMessage;
+
+  /// No description provided for @copyAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy all'**
+  String get copyAll;
+
+  /// No description provided for @timestamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Timestamp'**
+  String get timestamp;
+
+  /// No description provided for @level.
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get level;
+
+  /// No description provided for @source.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get source;
+
+  /// No description provided for @message.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get message;
+
+  /// No description provided for @details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get details;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @logSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Settings'**
+  String get logSettings;
+
+  /// No description provided for @persistLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Save logs to file'**
+  String get persistLogs;
+
+  /// No description provided for @logSavePath.
+  ///
+  /// In en, this message translates to:
+  /// **'Save path'**
+  String get logSavePath;
+
+  /// No description provided for @autoSaveInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto save interval'**
+  String get autoSaveInterval;
+
+  /// No description provided for @retentionDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Retention days'**
+  String get retentionDays;
+
+  /// No description provided for @maxLogCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Max log count'**
+  String get maxLogCount;
+
+  /// No description provided for @windowEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable log window by default'**
+  String get windowEnabled;
 }
 
 class _AppLocalizationsDelegate
