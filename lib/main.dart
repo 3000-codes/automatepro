@@ -2,18 +2,116 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 
 import 'core/router.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/providers/locale_provider.dart';
-import 'presentation/providers/log_provider.dart';
 import 'presentation/widgets/detached_log_window.dart';
 import 'l10n/app_localizations.dart';
 
+/// 日志窗口控制器 - 全局单例
+class LogWindowController {
+  static WindowController? _controller;
+  static String? _windowId;
+  static bool _isOpened = false;
+  static bool _isOpening = false;
+
+  static bool get isOpened => _isOpened;
+
+  /// 打开日志窗口
+  static Future<void> open() async {
+    // 防止重复打开 - 先设置为true防止竞态条件
+    if (_isOpening || _isOpened) {
+      // 如果已经打开，尝试显示
+      if (_isOpened && _controller != null) {
+        try {
+          await _controller?.show();
+        } catch (e) {
+          // 窗口已关闭，重置状态
+          _reset();
+        }
+      }
+      return;
+    }
+
+    _isOpening = true;
+
+    try {
+      // 检查是否已有子窗口存在
+      final existingWindows = await WindowController.getAll();
+      for (final window in existingWindows) {
+        // 检查窗口参数判断是否为日志窗口
+        try {
+          final args = jsonDecode(window.arguments);
+          if (args['type'] == 'log') {
+            // 日志窗口已存在，显示它
+            _controller = window;
+            _windowId = window.windowId;
+            _isOpened = true;
+            await _controller?.show();
+            return;
+          }
+        } catch (_) {
+          // 忽略解析错误
+        }
+      }
+
+      // 创建新窗口
+      final windowArgs = {'type': 'log'};
+      _controller = await WindowController.create(
+        WindowConfiguration(
+          arguments: jsonEncode(windowArgs),
+          hiddenAtLaunch: false,
+        ),
+      );
+      _windowId = _controller?.windowId;
+      _isOpened = true;
+      await _controller?.show();
+    } catch (e) {
+      _reset();
+    } finally {
+      _isOpening = false;
+    }
+  }
+
+  /// 关闭日志窗口
+  static Future<void> close() async {
+    if (_windowId != null) {
+      try {
+        final controller = WindowController.fromWindowId(_windowId!);
+        await controller.invokeMethod('window_close');
+      } catch (e) {
+        // 窗口可能已经关闭
+      }
+    }
+    _reset();
+  }
+
+  /// 重置状态
+  static void _reset() {
+    _controller = null;
+    _windowId = null;
+    _isOpened = false;
+    _isOpening = false;
+  }
+
+  /// 外部调用：标记窗口已关闭（当收到窗口关闭事件时调用）
+  static void markAsClosed() {
+    _reset();
+  }
+}
+
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 初始化 Hive
+  await Hive.initFlutter();
+
+  // 打开设置盒子
+  await Hive.openBox('settings');
 
   // Check if this is a secondary window
   if (args.firstOrNull == 'multi_window') {
@@ -44,49 +142,34 @@ void main(List<String> args) async {
     await windowManager.focus();
   });
 
+  // 添加窗口关闭监听器 - 关闭主窗口时同时关闭日志窗口
+  windowManager.addListener(_MainWindowListener());
+
   runApp(const ProviderScope(child: AutoMateApp()));
+}
+
+/// 主窗口监听器 - 用于在主窗口关闭时关闭日志窗口
+class _MainWindowListener extends WindowListener {
+  @override
+  void onWindowClose() async {
+    // 关闭日志窗口
+    await LogWindowController.close();
+    // 允许窗口关闭
+    await windowManager.destroy();
+  }
 }
 
 Future<void> _runSecondaryWindow(
   String windowId,
   Map<String, dynamic> args,
 ) async {
-  // Initialize window manager for secondary window
-  await windowManager.ensureInitialized();
-
-  final windowType = args['type'] as String? ?? 'log';
-
-  WindowOptions windowOptions;
-
-  if (windowType == 'log') {
-    windowOptions = const WindowOptions(
-      size: Size(600, 500),
-      minimumSize: Size(400, 300),
-      center: true,
-      backgroundColor: Colors.transparent,
-      skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.normal,
-      title: 'AutoMate Pro - Logs',
-    );
-  } else {
-    windowOptions = const WindowOptions(
-      size: Size(800, 600),
-      center: true,
-      title: 'AutoMate Pro',
-    );
-  }
-
-  await windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.show();
-    await windowManager.focus();
-  });
-
+  // 独立窗口不需要 window_manager，直接运行应用
   // Run the secondary window app
   runApp(
     ProviderScope(
       child: SecondaryWindowApp(
         windowId: windowId,
-        windowType: windowType,
+        windowType: args['type'] as String? ?? 'log',
         args: args,
       ),
     ),
