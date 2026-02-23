@@ -7,8 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:window_manager/window_manager.dart';
-import 'package:desktop_multi_window/desktop_multi_window.dart';
 
 import '../../domain/entities/log_entry.dart';
 import '../providers/log_provider.dart';
@@ -33,7 +31,6 @@ class _DetachedLogWindowState extends ConsumerState<DetachedLogWindow> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _autoScroll = true;
-  late WindowController _windowController;
 
   // 透明度控制
   double _opacity = 1.0;
@@ -48,7 +45,6 @@ class _DetachedLogWindowState extends ConsumerState<DetachedLogWindow> {
   void initState() {
     super.initState();
     _initOpacity();
-    _initWindowController();
     _initLogListener();
   }
 
@@ -65,20 +61,6 @@ class _DetachedLogWindowState extends ConsumerState<DetachedLogWindow> {
     final settings = LogSettingsStorage.load();
     final newSettings = settings.copyWith(windowOpacity: value);
     LogSettingsStorage.save(newSettings);
-  }
-
-  Future<void> _initWindowController() async {
-    // 获取窗口控制器
-    _windowController = WindowController.fromWindowId(widget.windowId);
-
-    // 设置方法处理器，监听来自主窗口的消息
-    await _windowController.setWindowMethodHandler((call) async {
-      if (call.method == 'window_close') {
-        // 收到关闭消息，关闭当前窗口
-        await windowManager.close();
-      }
-      return null;
-    });
   }
 
   void _initLogListener() {

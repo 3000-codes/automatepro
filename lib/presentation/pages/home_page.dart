@@ -6,8 +6,8 @@ import '../providers/log_provider.dart';
 import '../widgets/click_control_panel.dart';
 import '../widgets/coordinate_picker.dart';
 import '../widgets/click_settings_panel.dart';
-import '../widgets/embedded_log_window.dart';
 import '../../l10n/app_localizations.dart';
+import '../../main.dart' show LogWindowController;
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -17,18 +17,14 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  bool _showLogWindow = false;
-
   @override
   void initState() {
     super.initState();
-    // 根据设置决定是否显示日志窗口
+    // 根据设置决定是否打开日志窗口
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final settings = ref.read(logSettingsProvider);
       if (settings.windowEnabled) {
-        setState(() {
-          _showLogWindow = true;
-        });
+        LogWindowController.open();
       }
     });
   }
@@ -54,55 +50,48 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           // 日志窗口按钮
           IconButton(
-            icon: Icon(_showLogWindow ? Icons.article : Icons.article_outlined),
+            icon: Icon(
+              LogWindowController.isOpened
+                  ? Icons.article
+                  : Icons.article_outlined,
+            ),
             tooltip: l10n.logWindow,
             onPressed: () {
-              setState(() {
-                _showLogWindow = !_showLogWindow;
-              });
+              if (LogWindowController.isOpened) {
+                LogWindowController.close();
+              } else {
+                LogWindowController.open();
+              }
+              setState(() {});
             },
           ),
           const SizedBox(width: 8),
         ],
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        children: [
-                          const ClickControlPanel(),
-                          const SizedBox(height: 24),
-                          const CoordinatePicker(),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 24),
-                    const Expanded(flex: 1, child: ClickSettingsPanel()),
-                  ],
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      const ClickControlPanel(),
+                      const SizedBox(height: 24),
+                      const CoordinatePicker(),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 24),
+                const Expanded(flex: 1, child: ClickSettingsPanel()),
               ],
             ),
-          ),
-          // 嵌入式日志窗口
-          if (_showLogWindow)
-            EmbeddedLogWindow(
-              initialOpacity: SharedLogStorage.windowOpacity,
-              onClose: () {
-                setState(() {
-                  _showLogWindow = false;
-                });
-              },
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
