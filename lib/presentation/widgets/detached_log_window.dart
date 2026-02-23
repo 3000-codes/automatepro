@@ -125,9 +125,13 @@ class _DetachedLogWindowState extends ConsumerState<DetachedLogWindow> {
     final opacity = _opacity;
 
     return Opacity(
-      opacity: opacity,
+      opacity: 1.0,
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
+          backgroundColor: Theme.of(
+            context,
+          ).colorScheme.surface.withValues(alpha: opacity),
           title: Text(l10n.logWindow),
           actions: [
             // 透明度控制
@@ -280,7 +284,8 @@ class _DetachedLogWindowState extends ConsumerState<DetachedLogWindow> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest
+                    .withValues(alpha: opacity),
                 border: Border(
                   top: BorderSide(
                     color: Theme.of(context).colorScheme.outlineVariant,
