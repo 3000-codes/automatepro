@@ -9,6 +9,7 @@ import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'core/router.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/providers/locale_provider.dart';
+import 'presentation/providers/log_provider.dart';
 import 'presentation/widgets/detached_log_window.dart';
 import 'l10n/app_localizations.dart';
 
@@ -59,8 +60,14 @@ class LogWindowController {
         }
       }
 
+      // 获取当前透明度设置
+      final settings = LogSettingsStorage.load();
+
       // 创建新窗口
-      final windowArgs = {'type': 'log'};
+      final windowArgs = {
+        'type': 'log',
+        'windowOpacity': settings.windowOpacity,
+      };
       _controller = await WindowController.create(
         WindowConfiguration(
           arguments: jsonEncode(windowArgs),

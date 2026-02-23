@@ -49,8 +49,8 @@ class _DetachedLogWindowState extends ConsumerState<DetachedLogWindow> {
   }
 
   void _initOpacity() {
-    // 初始化透明度
-    _opacity = SharedLogStorage.windowOpacity;
+    // 从窗口参数中获取透明度设置
+    _opacity = widget.args['windowOpacity'] as double? ?? 1.0;
   }
 
   void _updateOpacity(double value) {
