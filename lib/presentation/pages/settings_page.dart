@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../main.dart' show LogWindowController;
 import '../providers/locale_provider.dart';
 import '../providers/log_provider.dart';
 
@@ -137,6 +138,8 @@ class SettingsPage extends ConsumerWidget {
                         ref
                             .read(logSettingsProvider.notifier)
                             .setWindowOpacity(value);
+                        // 实时通知日志窗口透明度变化
+                        LogWindowController.notifyOpacityChanged(value);
                       },
                     ),
                   ),

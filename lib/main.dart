@@ -97,6 +97,18 @@ class LogWindowController {
     _reset();
   }
 
+  /// 通知日志窗口透明度变化
+  static Future<void> notifyOpacityChanged(double opacity) async {
+    if (_windowId != null && _isOpened) {
+      try {
+        final controller = WindowController.fromWindowId(_windowId!);
+        await controller.invokeMethod('opacity_changed', {'opacity': opacity});
+      } catch (e) {
+        // 忽略错误
+      }
+    }
+  }
+
   /// 重置状态
   static void _reset() {
     _controller = null;
