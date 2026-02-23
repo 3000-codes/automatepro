@@ -163,13 +163,42 @@ Future<void> _runSecondaryWindow(
   String windowId,
   Map<String, dynamic> args,
 ) async {
-  // 独立窗口不需要 window_manager，直接运行应用
+  // 初始化 window_manager 用于子窗口
+  await windowManager.ensureInitialized();
+
+  final windowType = args['type'] as String? ?? 'log';
+
+  WindowOptions windowOptions;
+
+  if (windowType == 'log') {
+    windowOptions = const WindowOptions(
+      size: Size(600, 500),
+      minimumSize: Size(400, 300),
+      center: true,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.normal,
+      title: 'AutoMate Pro - Logs',
+    );
+  } else {
+    windowOptions = const WindowOptions(
+      size: Size(800, 600),
+      center: true,
+      title: 'AutoMate Pro',
+    );
+  }
+
+  await windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
   // Run the secondary window app
   runApp(
     ProviderScope(
       child: SecondaryWindowApp(
         windowId: windowId,
-        windowType: args['type'] as String? ?? 'log',
+        windowType: windowType,
         args: args,
       ),
     ),
