@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/click_provider.dart';
-import '../providers/log_provider.dart';
 import '../widgets/click_control_panel.dart';
 import '../widgets/coordinate_picker.dart';
 import '../widgets/click_settings_panel.dart';
 import '../../l10n/app_localizations.dart';
-import '../../main.dart' show LogWindowController;
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -17,18 +15,6 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-    // 根据设置决定是否打开日志窗口
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final settings = ref.read(logSettingsProvider);
-      if (settings.windowEnabled) {
-        LogWindowController.open();
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final clickState = ref.watch(clickEngineProvider);
@@ -48,23 +34,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               ),
             ),
-          // 日志窗口按钮
-          IconButton(
-            icon: Icon(
-              LogWindowController.isOpened
-                  ? Icons.article
-                  : Icons.article_outlined,
-            ),
-            tooltip: l10n.logWindow,
-            onPressed: () {
-              if (LogWindowController.isOpened) {
-                LogWindowController.close();
-              } else {
-                LogWindowController.open();
-              }
-              setState(() {});
-            },
-          ),
           const SizedBox(width: 8),
         ],
       ),
@@ -76,20 +45,13 @@ class _HomePageState extends ConsumerState<HomePage> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    children: [
-                      const ClickControlPanel(),
-                      const SizedBox(height: 24),
-                      const CoordinatePicker(),
-                    ],
-                  ),
-                ),
+                Expanded(flex: 2, child: ClickControlPanel()),
                 const SizedBox(width: 24),
-                const Expanded(flex: 1, child: ClickSettingsPanel()),
+                Expanded(flex: 3, child: ClickSettingsPanel()),
               ],
             ),
+            const SizedBox(height: 24),
+            CoordinatePicker(),
           ],
         ),
       ),

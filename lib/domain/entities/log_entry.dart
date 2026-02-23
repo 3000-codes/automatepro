@@ -1,9 +1,43 @@
 import 'package:equatable/equatable.dart';
 
 /// 日志级别枚举
-enum LogLevel { debug, info, warn, error }
+enum LogLevel {
+  debug,
+  info,
+  warn,
+  error;
 
-/// 日志条目模型
+  String get displayName {
+    switch (this) {
+      case LogLevel.debug:
+        return 'DEBUG';
+      case LogLevel.info:
+        return 'INFO';
+      case LogLevel.warn:
+        return 'WARN';
+      case LogLevel.error:
+        return 'ERROR';
+    }
+  }
+
+  static LogLevel fromString(String value) {
+    switch (value.toLowerCase()) {
+      case 'debug':
+        return LogLevel.debug;
+      case 'info':
+        return LogLevel.info;
+      case 'warn':
+      case 'warning':
+        return LogLevel.warn;
+      case 'error':
+        return LogLevel.error;
+      default:
+        return LogLevel.info;
+    }
+  }
+}
+
+/// 日志条目
 class LogEntry extends Equatable {
   final DateTime timestamp;
   final LogLevel level;
@@ -19,18 +53,16 @@ class LogEntry extends Equatable {
     this.extra,
   });
 
-  @override
-  List<Object?> get props => [timestamp, level, message, source, extra];
-
-  /// 转换为可读文本
-  String toReadableString() {
-    final timeStr = _formatTimestamp(timestamp);
-    final levelStr = level.name.toUpperCase().padRight(5);
-    final sourceStr = source != null ? '[$source] ' : '';
-    return '$timeStr [$levelStr] $sourceStr$message';
+  /// 格式化时间戳为 "时:分:秒.毫秒"
+  String get formattedTime {
+    final hour = timestamp.hour.toString().padLeft(2, '0');
+    final minute = timestamp.minute.toString().padLeft(2, '0');
+    final second = timestamp.second.toString().padLeft(2, '0');
+    final millisecond = timestamp.millisecond.toString().padLeft(3, '0');
+    return '$hour:$minute:$second.$millisecond';
   }
 
-  /// 转换为JSON对象
+  /// 转换为可序列化的 Map
   Map<String, dynamic> toJson() {
     return {
       'timestamp': timestamp.toIso8601String(),
@@ -41,27 +73,19 @@ class LogEntry extends Equatable {
     };
   }
 
-  /// 从JSON创建
+  /// 从 Map 创建 LogEntry
   factory LogEntry.fromJson(Map<String, dynamic> json) {
     return LogEntry(
       timestamp: DateTime.parse(json['timestamp'] as String),
-      level: LogLevel.values.firstWhere(
-        (e) => e.name == json['level'],
-        orElse: () => LogLevel.info,
-      ),
+      level: LogLevel.fromString(json['level'] as String),
       message: json['message'] as String,
       source: json['source'] as String?,
       extra: json['extra'] as Map<String, dynamic>?,
     );
   }
 
-  String _formatTimestamp(DateTime dt) {
-    final h = dt.hour.toString().padLeft(2, '0');
-    final m = dt.minute.toString().padLeft(2, '0');
-    final s = dt.second.toString().padLeft(2, '0');
-    final ms = dt.millisecond.toString().padLeft(3, '0');
-    return '$h:$m:$s.$ms';
-  }
+  @override
+  List<Object?> get props => [timestamp, level, message, source, extra];
 }
 
 /// 日志过滤条件
@@ -72,7 +96,12 @@ class LogFilter extends Equatable {
   final DateTime? endTime;
 
   const LogFilter({
-    this.enabledLevels = const {LogLevel.info, LogLevel.warn, LogLevel.error},
+    this.enabledLevels = const {
+      LogLevel.debug,
+      LogLevel.info,
+      LogLevel.warn,
+      LogLevel.error,
+    },
     this.searchKeyword,
     this.startTime,
     this.endTime,
@@ -83,12 +112,14 @@ class LogFilter extends Equatable {
     String? searchKeyword,
     DateTime? startTime,
     DateTime? endTime,
-    bool clearSearch = false,
+    bool clearKeyword = false,
     bool clearTimeRange = false,
   }) {
     return LogFilter(
       enabledLevels: enabledLevels ?? this.enabledLevels,
-      searchKeyword: clearSearch ? null : (searchKeyword ?? this.searchKeyword),
+      searchKeyword: clearKeyword
+          ? null
+          : (searchKeyword ?? this.searchKeyword),
       startTime: clearTimeRange ? null : (startTime ?? this.startTime),
       endTime: clearTimeRange ? null : (endTime ?? this.endTime),
     );
@@ -100,6 +131,7 @@ class LogFilter extends Equatable {
     if (!enabledLevels.contains(entry.level)) {
       return false;
     }
+
     // 关键词搜索
     if (searchKeyword != null && searchKeyword!.isNotEmpty) {
       final keyword = searchKeyword!.toLowerCase();
@@ -110,6 +142,7 @@ class LogFilter extends Equatable {
         return false;
       }
     }
+
     // 时间范围过滤
     if (startTime != null && entry.timestamp.isBefore(startTime!)) {
       return false;
@@ -117,6 +150,7 @@ class LogFilter extends Equatable {
     if (endTime != null && entry.timestamp.isAfter(endTime!)) {
       return false;
     }
+
     return true;
   }
 
@@ -124,117 +158,94 @@ class LogFilter extends Equatable {
   List<Object?> get props => [enabledLevels, searchKeyword, startTime, endTime];
 }
 
-/// 日志设置
+/// 日志窗口设置
 class LogSettings extends Equatable {
-  final bool persistEnabled;
-  final String savePath;
-  final String fileNaming; // 'date', 'session', 'fixed'
-  final int autoSaveInterval; // minutes, 0 = realtime
-  final int retentionDays;
+  final bool windowEnabled;
+  final double windowOpacity;
+  final double? windowX;
+  final double? windowY;
+  final double? windowWidth;
+  final double? windowHeight;
   final int maxLogCount;
-
-  // 日志窗口设置
-  final bool windowEnabled; // 是否默认开启日志窗口
-  final double windowOpacity; // 窗口透明度
-  final double? windowX; // 窗口位置X
-  final double? windowY; // 窗口位置Y
-  final double? windowWidth; // 窗口宽度
-  final double? windowHeight; // 窗口高度
+  final int autoSaveInterval;
 
   const LogSettings({
-    this.persistEnabled = false,
-    this.savePath = '',
-    this.fileNaming = 'date',
-    this.autoSaveInterval = 1,
-    this.retentionDays = 7,
-    this.maxLogCount = 10000,
-    this.windowEnabled = true, // 默认开启日志窗口
+    this.windowEnabled = false,
     this.windowOpacity = 1.0,
     this.windowX,
     this.windowY,
     this.windowWidth,
     this.windowHeight,
+    this.maxLogCount = 10000,
+    this.autoSaveInterval = 60,
   });
 
   LogSettings copyWith({
-    bool? persistEnabled,
-    String? savePath,
-    String? fileNaming,
-    int? autoSaveInterval,
-    int? retentionDays,
-    int? maxLogCount,
     bool? windowEnabled,
     double? windowOpacity,
     double? windowX,
     double? windowY,
     double? windowWidth,
     double? windowHeight,
+    int? maxLogCount,
+    int? autoSaveInterval,
   }) {
     return LogSettings(
-      persistEnabled: persistEnabled ?? this.persistEnabled,
-      savePath: savePath ?? this.savePath,
-      fileNaming: fileNaming ?? this.fileNaming,
-      autoSaveInterval: autoSaveInterval ?? this.autoSaveInterval,
-      retentionDays: retentionDays ?? this.retentionDays,
-      maxLogCount: maxLogCount ?? this.maxLogCount,
       windowEnabled: windowEnabled ?? this.windowEnabled,
       windowOpacity: windowOpacity ?? this.windowOpacity,
       windowX: windowX ?? this.windowX,
       windowY: windowY ?? this.windowY,
       windowWidth: windowWidth ?? this.windowWidth,
       windowHeight: windowHeight ?? this.windowHeight,
-    );
-  }
-
-  /// 转换为JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'persistEnabled': persistEnabled,
-      'savePath': savePath,
-      'fileNaming': fileNaming,
-      'autoSaveInterval': autoSaveInterval,
-      'retentionDays': retentionDays,
-      'maxLogCount': maxLogCount,
-      'windowEnabled': windowEnabled,
-      'windowOpacity': windowOpacity,
-      'windowX': windowX,
-      'windowY': windowY,
-      'windowWidth': windowWidth,
-      'windowHeight': windowHeight,
-    };
-  }
-
-  /// 从JSON创建
-  factory LogSettings.fromJson(Map<String, dynamic> json) {
-    return LogSettings(
-      persistEnabled: json['persistEnabled'] as bool? ?? false,
-      savePath: json['savePath'] as String? ?? '',
-      fileNaming: json['fileNaming'] as String? ?? 'date',
-      autoSaveInterval: json['autoSaveInterval'] as int? ?? 1,
-      retentionDays: json['retentionDays'] as int? ?? 7,
-      maxLogCount: json['maxLogCount'] as int? ?? 10000,
-      windowEnabled: json['windowEnabled'] as bool? ?? true,
-      windowOpacity: (json['windowOpacity'] as num?)?.toDouble() ?? 1.0,
-      windowX: (json['windowX'] as num?)?.toDouble(),
-      windowY: (json['windowY'] as num?)?.toDouble(),
-      windowWidth: (json['windowWidth'] as num?)?.toDouble(),
-      windowHeight: (json['windowHeight'] as num?)?.toDouble(),
+      maxLogCount: maxLogCount ?? this.maxLogCount,
+      autoSaveInterval: autoSaveInterval ?? this.autoSaveInterval,
     );
   }
 
   @override
   List<Object?> get props => [
-    persistEnabled,
-    savePath,
-    fileNaming,
-    autoSaveInterval,
-    retentionDays,
-    maxLogCount,
     windowEnabled,
     windowOpacity,
     windowX,
     windowY,
     windowWidth,
     windowHeight,
+    maxLogCount,
+    autoSaveInterval,
   ];
+}
+
+/// 时间范围快速选择
+enum TimeRangeOption {
+  all,
+  last5Minutes,
+  last1Hour,
+  today;
+
+  String get displayName {
+    switch (this) {
+      case TimeRangeOption.all:
+        return '全部';
+      case TimeRangeOption.last5Minutes:
+        return '最近 5 分钟';
+      case TimeRangeOption.last1Hour:
+        return '最近 1 小时';
+      case TimeRangeOption.today:
+        return '今天';
+    }
+  }
+
+  (DateTime?, DateTime?) toTimeRange() {
+    final now = DateTime.now();
+    switch (this) {
+      case TimeRangeOption.all:
+        return (null, null);
+      case TimeRangeOption.last5Minutes:
+        return (now.subtract(const Duration(minutes: 5)), now);
+      case TimeRangeOption.last1Hour:
+        return (now.subtract(const Duration(hours: 1)), now);
+      case TimeRangeOption.today:
+        return (DateTime(now.year, now.month, now.day), now);
+    }
+  }
 }

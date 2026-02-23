@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../presentation/pages/home_page.dart';
 import '../../presentation/pages/settings_page.dart';
 import '../../presentation/pages/presets_page.dart';
+import '../../presentation/providers/log_window_controller_provider.dart';
 import '../../l10n/app_localizations.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -48,6 +49,7 @@ class MainShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final logWindowController = ref.watch(logWindowControllerProvider);
 
     return Scaffold(
       body: Row(
@@ -55,7 +57,7 @@ class MainShell extends ConsumerWidget {
           NavigationRail(
             selectedIndex: _calculateSelectedIndex(context),
             onDestinationSelected: (index) =>
-                _onDestinationSelected(index, context),
+                _onDestinationSelected(index, context, ref),
             labelType: NavigationRailLabelType.all,
             leading: Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -94,6 +96,15 @@ class MainShell extends ConsumerWidget {
                 selectedIcon: const Icon(Icons.settings),
                 label: Text(l10n.settings),
               ),
+              NavigationRailDestination(
+                icon: Icon(
+                  logWindowController.isOpen
+                      ? Icons.article
+                      : Icons.article_outlined,
+                ),
+                selectedIcon: const Icon(Icons.article),
+                label: Text(l10n.logs),
+              ),
             ],
           ),
           const VerticalDivider(thickness: 1, width: 1),
@@ -110,7 +121,7 @@ class MainShell extends ConsumerWidget {
     return 0;
   }
 
-  void _onDestinationSelected(int index, BuildContext context) {
+  void _onDestinationSelected(int index, BuildContext context, WidgetRef ref) {
     switch (index) {
       case 0:
         context.goNamed('home');
@@ -120,6 +131,10 @@ class MainShell extends ConsumerWidget {
         break;
       case 2:
         context.goNamed('settings');
+        break;
+      case 3:
+        // 切换日志独立窗口
+        ref.read(logWindowControllerProvider.notifier).toggleWindow();
         break;
     }
   }
